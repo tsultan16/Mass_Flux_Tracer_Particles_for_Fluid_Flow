@@ -18,5 +18,3 @@
 
 
 # Implemented 1D upto 3D
-
-# Need to make a new subroutine for "creating" and "destroying" tracer particles (i.e. allocating and deallocating memory)
