@@ -1,0 +1,256 @@
+######################################
+#Some notes about Binary Search Trees#
+######################################
+
+
+**************************************
+* The AVL Height Balancing Algorithm *
+**************************************
+
+ Definition:  A node in a binary search tree (BST)  is said to be balanced if the height difference between 
+ it's subtrees is no more than 1. A BST is said to be AVL if every single node in that tree is balanced!
+
+ This algorithm checks the tree for imbalanced nodes. It starts from the root and goes 
+ down the path traversed during the last insert. If it comes across a node X with 
+ |bf(X)| > 1, then the sub-tree at that node is imbalanced. To fix the imbalance, can performs "rotations".
+
+ Need to condier two distinct cases.
+
+
+ **Case 1: bf(X) = +2
+
+           Before insert, bf(X)= +1, and after insert, height of it's right sub-tree increased by 1.
+
+        Before:      X
+                   /   \
+               A(h)   B(h+1)      A and B are the left and right subtrees of X
+                                  with heights h and h+1 so that bf(X) = +1                                                                    
+        After:       X
+                   /   \
+               A(h)   B(h+2)      Now, bf(X) = +2                                                                    
+
+
+        Two possible ways this can happen:
+         
+        (i) The insertion increased the height of node B's right sub-tree by 1.     
+
+         Before:       X(bf=+1)
+                     /   \
+                  A(h)   B(h+1)    
+                          /   \
+                      B_L(h)   B_R(h)
+                                                                                                       
+         After:        X(bf=+2)
+                     /   \
+                  A(h)   B(h+2)    
+                          /  \
+                      B_L(h)   B_R(h+1)    Height of B_R has gone up by 1.
+                
+         SOLUTION: Single Left-Rotation(X). After Rotation the sub-tree becomes:   
+
+                                    B(bf=0)
+                                   /   \
+                                  X(h+1)  B_R(h+1)    
+                                 /  \
+                                A(h)  B_L(h)   
+
+                    This transformation involves the following steps:
+                    1) Assign B_L as right node of X
+                    2) Assign X as left node of B
+                    3) Re-assign B as the new root of the sub-tree.
+                     
+                       
+
+        (ii) The insertion increased the height of node B's left sub-tree by 1. 
+
+         Before:       X(bf=+1)
+                     /   \
+                  A(h)   B(h+1)    
+                          /   \
+                      B_L(h)   B_R(h)
+                      /  \
+                 Y_L(h-1) Y_R(h-1)     where Y_L and Y_R are the left and right sub-trees of B_L           
+     
+                                                                                                  
+         After:        X(bf=+2)                         X(bf=+2)
+                     /   \                            /   \
+                  A(h)   B(h+2)                     A(h)   B(h+2)    
+                          /   \            OR               /   \
+                      B_L(h+1) B_R(h)                   B_L(h+1) B_R(h)
+                      /  \                               /  \
+                 Y_L(h-1) Y_R(h)                    Y_L(h) Y_R(h-1)                
+                    
+         (Note: for the case h=0, B_L itself would be the newly inserted node)
+
+          SOLUTION: Double Right-Left Rotation: Right-Rotation(B) followed by Left-Rotation(X).
+
+                    After  Right-Rotation(B)          X
+                                                    /   \
+                                                   A     B_L    
+                                                        /   \
+                                                       Y_L    B
+                                                             /  \
+                                                           Y_R   B_R
+                    
+                    After Left-Rotation(X)            B_L(bf=0) 
+                                                    /      \
+                                                   X(h+1)   B(h+1)   
+                                                  / \     /   \
+                                                A(h) Y_L  Y_R   B_R(h)
+                    
+                    This transformation involves the following steps:
+                    1) Break B from the right of node X.
+                    2) Break B_L from the left of node B.
+                    3) Break Y_L and Y_R from B_L
+                    3) Re-assign B_L as the new root of the sub-tree.
+                    4) Assign B as right node of B_L
+                    5) Assign X as left node of B_L
+                    6) Assign Y_L as right node of X
+                    7) Assign Y_R as left node of B   
+                    
+ **Case 2: bf(X) = -2
+ 
+           Symmetry of Case 1. Before insert, bf(X) = -1. After insert, height of it's left subtree decreased by 1,
+           making bf(X) = -2      
+
+
+
+
+*******************************
+* BST NODE DELETION algorithm.*
+*******************************
+
+This algorithm can be used to delete a node from a BST (can be balanced or unbalanced). 
+
+To demonstrate we consider the following example tree:
+
+            A
+          /   \
+         B     C
+        / \
+       D   B_R
+           /  \
+          X    Z
+         / \
+        nil Y
+
+Suppose we want to delete B. 
+
+First, go down the left node of the right subtree of B (i.e. go down left of BR). 
+(go down left node of BR because we want replacement of B to be smaller than BR and bigger than D)
+
+Find the first node that has only one non-empty subtree. In this case that's node X.
+(In the trivial case, X would just be a leaf node or null.)
+
+Then replace B with node X and fix the broken links.
+
+            A
+          /   \
+         X     C
+        / \
+       D   B_R
+           /  \
+          Y    Z
+ 
+Note that this operation preserve the BST order.
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+The above example applies to the general case of when the deletion node B has two children.
+When B has one or no children, deletion becomes even easier. Here are the rules for all three
+possible cases:
+
+Case 1) B has no children (i.e. B is a leaf node):
+
+            A
+          /   \
+         C     B
+
+        In this case, simply delete B to get
+
+            A
+          /   
+         C     
+
+
+Case 2) B has one child:
+
+            A
+          /   \
+         C     B
+              /   
+             D  
+
+        In this case, just replace B with it's child node to get
+
+            A
+          /   \
+         C     D
+
+
+Case 3) B has two children:
+
+            A
+          /   \
+         C     B
+              / \  
+           B_L   B_R
+                 /  \
+                X    Z
+               / \
+              Y  nil
+
+
+        In this case the problem of deleting B can be reduced to either case 1 or 2.
+        We find a successor node X (which satisfies Case 1 or 2)from B's sub-trees. 
+        There's two possibilities here. The successor can either be the smallest element
+        in X's right sub-tree or largest element in it's left sub-tree.
+
+        (i) Find successor X from right sub-tree of B (i.e. BR).
+        X has to be less than BR, so we go down left sub-tree of BR to find it.
+        Once X is found, we replace the contents of B with the contents of X and delete X using rules
+        of Case 1 or 2. 
+
+
+            A
+          /   \
+         C     X
+             /   \  
+           B_L   B_R
+                 /  \
+                Y    Z
+               
+
+        (ii) Find successor X from left sub-tree of B (i.e. BL).
+        X has to be greater than BL, so we go down right sub-tree of BL to find it.
+        Once X is found, we replace the contents of B with the contents of X and delete X using rules
+        of Case 1 or 2. 
+
+
+        Either possibility leads to a valid solution of the deletion problem. (Perhaps a good strategy would be
+        to pick the successor node from the sub-tree which would result in the least imbalance.)
+
+/////////////////////////////////////////////////////////////////////////////////////
+During actual implementation of this algorithm, it's more viable to just replace the 
+values stored inside B with the values of X to reflect the deletion.     
+//////////////////////////////////////////////////////////////////////////////////////
+
+*******************************
+* AVL NODE DELETION algorithm.*
+*******************************
+
+For an AVL tree, we can delete a node using the BST node deletion algorithm. We then
+need to follow up with two addition steps:
+
+    1) Travel backwards from the deleted node X towards the root. Update balance factors along the way.
+    2) Perform rebalancing if necessary
+
+
+
+  
+
+
+
+
+
+

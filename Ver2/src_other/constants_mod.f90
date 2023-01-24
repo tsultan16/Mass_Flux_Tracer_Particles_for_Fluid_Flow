@@ -1,0 +1,12 @@
+MODULE constants_mod
+	IMPLICIT NONE	
+    
+	INTEGER, PARAMETER :: N = 1000000
+    INTEGER, PARAMETER :: nx = 100
+    INTEGER, PARAMETER :: ny = 100
+    INTEGER, PARAMETER :: nz = 1
+    INTEGER, PARAMETER :: nb = 1
+    INTEGER, PARAMETER :: ndims = 2
+    INTEGER, PARAMETER :: nt = 100
+
+END MODULE constants_mod

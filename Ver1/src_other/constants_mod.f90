@@ -1,0 +1,13 @@
+MODULE constants_mod
+	IMPLICIT NONE	
+    
+	INTEGER, PARAMETER :: N = 200000
+    INTEGER, PARAMETER :: nx = 50
+    INTEGER, PARAMETER :: ny = 1
+    INTEGER, PARAMETER :: nz = 1
+    INTEGER, PARAMETER :: nb = 1
+    INTEGER, PARAMETER :: ndims = 1
+    INTEGER, PARAMETER :: nt = 1
+    INTEGER, PARAMETER :: num_nodes = 2 ! FIXED NUMBER OF NODES PER TREE
+
+END MODULE constants_mod
